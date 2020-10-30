@@ -47,6 +47,17 @@ module.exports = {
       port: 7545, // Standard Ethereum port (default: none)
       network_id: "*", // Any network (default: none)
     },
+    ci: {
+      host: "trufflesuite-ganache-cli",
+      port: 8545,
+      network_id: "*",
+    },
+    coverage: {
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: "*",
+      gas: 8000000,
+    },
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
@@ -79,11 +90,14 @@ module.exports = {
     // timeout: 100000
   },
 
+  // Plugins
+  plugins: ["solidity-coverage"],
+
   // Configure your compilers
   compilers: {
     solc: {
       version: "0.6.8", // Fetch exact version from solc-bin (default: truffle's version)
-      docker: true, // Use "0.5.1" you've installed locally with docker (default: false)
+      docker: false, // Use "0.5.1" you've installed locally with docker (default: false)
       settings: {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
