@@ -16,7 +16,7 @@
 
 // SPDX-License-Identifier: Apache-2.0
 
-pragma solidity 0.6.8;
+pragma solidity 0.6.11;
 
 import "../node_modules/@openzeppelin/contracts/utils/Pausable.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";

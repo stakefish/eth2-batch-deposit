@@ -1,12 +1,21 @@
 // THIS IS FOR TESTING PURPOSES ONLY. COPY PASTED FROM MEDALLA CONTRACT
 
 /**
- *Submitted for verification at Etherscan.io on 2020-07-21
+ *Submitted for verification at Etherscan.io on 2020-10-14
 */
 
-// SPDX-License-Identifier: Apache-2.0
+// ┏━━━┓━┏┓━┏┓━━┏━━━┓━━┏━━━┓━━━━┏━━━┓━━━━━━━━━━━━━━━━━━━┏┓━━━━━┏━━━┓━━━━━━━━━┏┓━━━━━━━━━━━━━━┏┓━
+// ┃┏━━┛┏┛┗┓┃┃━━┃┏━┓┃━━┃┏━┓┃━━━━┗┓┏┓┃━━━━━━━━━━━━━━━━━━┏┛┗┓━━━━┃┏━┓┃━━━━━━━━┏┛┗┓━━━━━━━━━━━━┏┛┗┓
+// ┃┗━━┓┗┓┏┛┃┗━┓┗┛┏┛┃━━┃┃━┃┃━━━━━┃┃┃┃┏━━┓┏━━┓┏━━┓┏━━┓┏┓┗┓┏┛━━━━┃┃━┗┛┏━━┓┏━┓━┗┓┏┛┏━┓┏━━┓━┏━━┓┗┓┏┛
+// ┃┏━━┛━┃┃━┃┏┓┃┏━┛┏┛━━┃┃━┃┃━━━━━┃┃┃┃┃┏┓┃┃┏┓┃┃┏┓┃┃━━┫┣┫━┃┃━━━━━┃┃━┏┓┃┏┓┃┃┏┓┓━┃┃━┃┏┛┗━┓┃━┃┏━┛━┃┃━
+// ┃┗━━┓━┃┗┓┃┃┃┃┃┃┗━┓┏┓┃┗━┛┃━━━━┏┛┗┛┃┃┃━┫┃┗┛┃┃┗┛┃┣━━┃┃┃━┃┗┓━━━━┃┗━┛┃┃┗┛┃┃┃┃┃━┃┗┓┃┃━┃┗┛┗┓┃┗━┓━┃┗┓
+// ┗━━━┛━┗━┛┗┛┗┛┗━━━┛┗┛┗━━━┛━━━━┗━━━┛┗━━┛┃┏━┛┗━━┛┗━━┛┗┛━┗━┛━━━━┗━━━┛┗━━┛┗┛┗┛━┗━┛┗┛━┗━━━┛┗━━┛━┗━┛
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┃┃━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┗┛━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-pragma solidity 0.6.8;
+// SPDX-License-Identifier: CC0-1.0
+
+pragma solidity 0.6.11;
 
 // This interface is designed to be compatible with the Vyper version.
 /// @notice This is the Ethereum 2.0 deposit contract interface.
@@ -59,8 +68,6 @@ interface ERC165 {
 /// @notice This is the Ethereum 2.0 deposit contract interface.
 /// For more information see the Phase 0 specification under https://github.com/ethereum/eth2.0-specs
 contract DepositContract is IDepositContract, ERC165 {
-    uint constant GWEI = 1e9;
-
     uint constant DEPOSIT_CONTRACT_TREE_DEPTH = 32;
     // NOTE: this also ensures `deposit_count` will fit into 64-bits
     uint constant MAX_DEPOSIT_COUNT = 2**DEPOSIT_CONTRACT_TREE_DEPTH - 1;
@@ -76,8 +83,6 @@ contract DepositContract is IDepositContract, ERC165 {
             zero_hashes[height + 1] = sha256(abi.encodePacked(zero_hashes[height], zero_hashes[height]));
     }
 
-    /// @notice Query the current deposit root hash.
-    /// @return The deposit root hash.
     function get_deposit_root() override external view returns (bytes32) {
         bytes32 node;
         uint size = deposit_count;
@@ -95,18 +100,10 @@ contract DepositContract is IDepositContract, ERC165 {
         ));
     }
 
-    /// @notice Query the current deposit count.
-    /// @return The deposit count encoded as a little endian 64-bit number.
     function get_deposit_count() override external view returns (bytes memory) {
         return to_little_endian_64(uint64(deposit_count));
     }
 
-    /// @notice Submit a Phase 0 DepositData object.
-    /// @param pubkey A BLS12-381 public key.
-    /// @param withdrawal_credentials Commitment to a public key for withdrawals.
-    /// @param signature A BLS12-381 signature.
-    /// @param deposit_data_root The SHA-256 hash of the SSZ-encoded DepositData object.
-    /// Used as a protection against malformed input.
     function deposit(
         bytes calldata pubkey,
         bytes calldata withdrawal_credentials,
@@ -120,8 +117,8 @@ contract DepositContract is IDepositContract, ERC165 {
 
         // Check deposit amount
         require(msg.value >= 1 ether, "DepositContract: deposit value too low");
-        require(msg.value % GWEI == 0, "DepositContract: deposit value not multiple of gwei");
-        uint deposit_amount = msg.value / GWEI;
+        require(msg.value % 1 gwei == 0, "DepositContract: deposit value not multiple of gwei");
+        uint deposit_amount = msg.value / 1 gwei;
         require(deposit_amount <= type(uint64).max, "DepositContract: deposit value too high");
 
         // Emit `DepositEvent` log
