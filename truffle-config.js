@@ -101,8 +101,8 @@ module.exports = {
       settings: {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
-          enabled: false,
-          runs: 200,
+          enabled: true,
+          runs: 5000000,
         },
         evmVersion: "byzantium",
       },
