@@ -60,12 +60,10 @@ contract("BatchDeposit", async (accounts) => {
 
   it("should not renounce ownership", async () => {
     let contract = await BatchDeposit.deployed();
-    let res = await contract.renounceOwnership({ from: accounts[0] });
 
-    assert.equal(
-      res.receipt.rawLogs.length,
-      0,
-      "ownership has been transfered :("
+    await truffleAssert.reverts(
+      contract.renounceOwnership({ from: accounts[0] }),
+      "Ownable: renounceOwnership is disabled"
     );
   });
 });

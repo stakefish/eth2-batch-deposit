@@ -95,29 +95,20 @@ contract BatchDeposit is Pausable, Ownable {
         require(msg.value % GWEI == 0, "BatchDeposit: Deposit value not multiple of GWEI");
         require(msg.value >= DEPOSIT_AMOUNT, "BatchDeposit: Amount is too low");
 
-        require(pubkeys.length >= PUBKEY_LENGTH, "BatchDeposit: You should deposit at least one validator");
+        require(deposit_data_roots.length > 0, "BatchDeposit: You should deposit at least one validator");
+        require(deposit_data_roots.length <= MAX_VALIDATORS, "BatchDeposit: You can deposit max 100 validators at a time");
 
-        require(pubkeys.length.mod(PUBKEY_LENGTH) == 0, "BatchDeposit: Invalid pubkey length");
-        require(pubkeys.length <= PUBKEY_LENGTH * MAX_VALIDATORS, "BatchDeposit: You can deposit max 100 validators at a time");
+        uint32 count = uint32(deposit_data_roots.length);
+        require(pubkeys.length == count * PUBKEY_LENGTH, "BatchDeposit: Pubkey count don't match");
+        require(signatures.length == count * SIGNATURE_LENGTH, "BatchDeposit: Signatures count don't match");
+        require(withdrawal_credentials.length == 1 * CREDENTIALS_LENGTH, "BatchDeposit: Withdrawal Credentials count don't match");
 
-        require(signatures.length >= SIGNATURE_LENGTH, "DepositContract: Invalid signature length");
-
-        require(signatures.length.mod(SIGNATURE_LENGTH) == 0, "BatchDeposit: Invalid signature length");
-
-        require(withdrawal_credentials.length == CREDENTIALS_LENGTH, "BatchDeposit: Invalid withdrawal_credentials length");
-
-        uint32 pubkeyCount = uint32(pubkeys.length.div(PUBKEY_LENGTH));
-        require(
-            pubkeyCount == signatures.length.div(SIGNATURE_LENGTH) && pubkeyCount == deposit_data_roots.length, 
-            "BatchDeposit: Data counts don't match"
-        );
-
-        uint256 expectedAmount = _fee.add(DEPOSIT_AMOUNT).mul(pubkeyCount);
+        uint256 expectedAmount = _fee.add(DEPOSIT_AMOUNT).mul(count);
         require(msg.value == expectedAmount, "BatchDeposit: Amount is not aligned with pubkeys number");
 
-        emit FeeCollected(msg.sender, _fee.mul(pubkeyCount));
+        emit FeeCollected(msg.sender, _fee.mul(count));
 
-        for (uint32 i = 0; i < pubkeyCount; ++i) {
+        for (uint32 i = 0; i < count; ++i) {
             bytes memory pubkey = bytes(pubkeys[i*PUBKEY_LENGTH:(i+1)*PUBKEY_LENGTH]);
             bytes memory signature = bytes(signatures[i*SIGNATURE_LENGTH:(i+1)*SIGNATURE_LENGTH]);
 
@@ -189,6 +180,6 @@ contract BatchDeposit is Pausable, Ownable {
      * Disable renunce ownership
      */
     function renounceOwnership() public override onlyOwner {
-        // Do nothing
+        revert("Ownable: renounceOwnership is disabled");
     }
 }
