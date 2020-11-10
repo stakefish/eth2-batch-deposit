@@ -66,7 +66,6 @@ contract BatchDeposit is Pausable, Ownable {
     uint32 constant SIGNATURE_LENGTH = 96;
     uint32 constant CREDENTIALS_LENGTH = 32;
     uint8 constant MAX_VALIDATORS = 100;
-    uint constant GWEI = 10**9;
     uint constant DEPOSIT_AMOUNT = 32 ether;
 
     event FeeChanged(uint256 previousFee, uint256 newFee);
@@ -74,7 +73,7 @@ contract BatchDeposit is Pausable, Ownable {
     event FeeCollected(address indexed payee, uint256 weiAmount);
 
     constructor(address depositContractAddr, uint256 initialFee) public {
-        require(initialFee % GWEI == 0, "Fee must be a multiple of GWEI");
+        require(initialFee % 1 gwei == 0, "Fee must be a multiple of GWEI");
 
         depositContract = depositContractAddr;
         _fee = initialFee;
@@ -92,7 +91,7 @@ contract BatchDeposit is Pausable, Ownable {
         external payable whenNotPaused 
     {
         // sanity checks
-        require(msg.value % GWEI == 0, "BatchDeposit: Deposit value not multiple of GWEI");
+        require(msg.value % 1 gwei == 0, "BatchDeposit: Deposit value not multiple of GWEI");
         require(msg.value >= DEPOSIT_AMOUNT, "BatchDeposit: Amount is too low");
 
         require(deposit_data_roots.length > 0, "BatchDeposit: You should deposit at least one validator");
@@ -141,7 +140,7 @@ contract BatchDeposit is Pausable, Ownable {
      */
     function changeFee(uint256 newFee) public onlyOwner {
         require(newFee != _fee, "Fee must be different from current one");
-        require(newFee % GWEI == 0, "Fee must be a multiple of GWEI");
+        require(newFee % 1 gwei == 0, "Fee must be a multiple of GWEI");
 
         emit FeeChanged(_fee, newFee);
         _fee = newFee;
