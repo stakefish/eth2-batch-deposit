@@ -62,11 +62,11 @@ contract BatchDeposit is Pausable, Ownable {
     address depositContract;
     uint256 private _fee;
 
-    uint32 constant PUBKEY_LENGTH = 48;
-    uint32 constant SIGNATURE_LENGTH = 96;
-    uint32 constant CREDENTIALS_LENGTH = 32;
-    uint8 constant MAX_VALIDATORS = 100;
-    uint constant DEPOSIT_AMOUNT = 32 ether;
+    uint256 constant PUBKEY_LENGTH = 48;
+    uint256 constant SIGNATURE_LENGTH = 96;
+    uint256 constant CREDENTIALS_LENGTH = 32;
+    uint256 constant MAX_VALIDATORS = 100;
+    uint256 constant DEPOSIT_AMOUNT = 32 ether;
 
     event FeeChanged(uint256 previousFee, uint256 newFee);
     event Withdrawn(address indexed payee, uint256 weiAmount);
@@ -94,10 +94,10 @@ contract BatchDeposit is Pausable, Ownable {
         require(msg.value % 1 gwei == 0, "BatchDeposit: Deposit value not multiple of GWEI");
         require(msg.value >= DEPOSIT_AMOUNT, "BatchDeposit: Amount is too low");
 
-        require(deposit_data_roots.length > 0, "BatchDeposit: You should deposit at least one validator");
-        require(deposit_data_roots.length <= MAX_VALIDATORS, "BatchDeposit: You can deposit max 100 validators at a time");
+        uint256 count = deposit_data_roots.length;
+        require(count > 0, "BatchDeposit: You should deposit at least one validator");
+        require(count <= MAX_VALIDATORS, "BatchDeposit: You can deposit max 100 validators at a time");
 
-        uint32 count = uint32(deposit_data_roots.length);
         require(pubkeys.length == count * PUBKEY_LENGTH, "BatchDeposit: Pubkey count don't match");
         require(signatures.length == count * SIGNATURE_LENGTH, "BatchDeposit: Signatures count don't match");
         require(withdrawal_credentials.length == 1 * CREDENTIALS_LENGTH, "BatchDeposit: Withdrawal Credentials count don't match");
@@ -107,7 +107,7 @@ contract BatchDeposit is Pausable, Ownable {
 
         emit FeeCollected(msg.sender, _fee.mul(count));
 
-        for (uint32 i = 0; i < count; ++i) {
+        for (uint256 i = 0; i < count; ++i) {
             bytes memory pubkey = bytes(pubkeys[i*PUBKEY_LENGTH:(i+1)*PUBKEY_LENGTH]);
             bytes memory signature = bytes(signatures[i*SIGNATURE_LENGTH:(i+1)*SIGNATURE_LENGTH]);
 
