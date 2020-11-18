@@ -9,11 +9,16 @@
 //  /\__, `\\ \ \_/\ \L\.\_\ \ \\`\ /\  __/  __\ \ \_/\ \ \/\__, `\\ \ \ \ \
 //  \/\____/ \ \__\ \__/.\_\\ \_\ \_\ \____\/\_\\ \_\  \ \_\/\____/ \ \_\ \_\
 //   \/___/   \/__/\/__/\/_/ \/_/\/_/\/____/\/_/ \/_/   \/_/\/___/   \/_/\/_/
-
-// stakefish ETH2 Batch Deposit contract
-// this contract allows deposit of multiple validators in one tx
-// and also collects the validator fee for stakefish
-
+//
+// stakefish Eth2 Batch Deposit contract
+//
+// ### WARNING ###
+// DO NOT USE THIS CONTRACT DIRECTLY. THIS CONTRACT IS ONLY TO BE USED 
+// BY STAKING VIA stakefish's WEBSITE LOCATED AT: https://stake.fish
+//
+// This contract allows deposit of multiple validators in one transaction
+// and also collects the validator service fee for stakefish
+//
 // SPDX-License-Identifier: Apache-2.0
 
 pragma solidity 0.6.11;
