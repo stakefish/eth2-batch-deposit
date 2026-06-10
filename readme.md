@@ -2,47 +2,83 @@
 
 [![pipeline status](https://gitlab.fish/stakefish/eth2-batch-deposit/badges/master/pipeline.svg)](https://gitlab.fish/stakefish/eth2-batch-deposit/-/commits/master) [![coverage report](https://gitlab.fish/stakefish/eth2-batch-deposit/badges/master/coverage.svg)](https://gitlab.fish/stakefish/eth2-batch-deposit/-/commits/master)
 
-This contract enable to deposit to the ETH2 Deposit Contract multiple times in a single transaction.
+This contract enables depositing to the ETH2 Deposit Contract multiple times in a single transaction.
+
+## Setup
+
+This project uses [Hardhat](https://hardhat.org/).
+
+1. Clone the repository
+1. `npm install`
 
 ## Usage
 
-You can test the contract on both goerli testnet or in your local development environment.
+### Compile
 
-### Integrated ganache-chi
+```sh
+npx hardhat compile
+```
 
-1. Clone
-1. `npm install`
-1. In a terminal run `npx ganache-cli`
-1. In another terminal run `npx truffle deploy`
+### Test
 
-### Test on your local blockchain
+Run the full test suite against the built-in Hardhat network:
 
-1. Clone the repository
-1. Install [Ganache](https://www.trufflesuite.com/ganache) and [Truffle](https://www.trufflesuite.com/truffle)
-1. Run ganache and quick start an empty workspace
-1. Tun `truffle deploy` to compile & deploy, or just `truffle test` to compile, deploy and test automatically.
+```sh
+npm test
+# or
+npx hardhat test
+```
 
-### Test on Goerli
+### Local node
 
-1. Get some funds from the [faucet](https://faucet.goerli.mudit.blog/)
-1. Replace mnemonic in `./scripts/test_goerli.js`
-1. Replace fake data with some real eth2 validator informations
-1. Check if the smart contract address is correct
-1. Run the script with `cd scripts && node test_goerli.js`
+Start a local Hardhat node, then deploy or interact with it:
+
+```sh
+npx hardhat node
+```
+
+### Deploy
+
+Deployment is handled by `scripts/deploy.js`, which deploys `BatchDeposit`,
+waits for confirmations, and verifies the contract on Etherscan. Supported
+networks are configured in `hardhat.config.js` (`mainnet`, `hoodi`, `holesky`).
+
+```sh
+npx hardhat run scripts/deploy.js --network <network>
+```
+
+The script reads RPC URLs, private keys, and the Etherscan API key from
+environment variables (see `.env`):
+
+- `MAINNET_RPC_URL` / `MAINNET_PRIVATE_KEY`
+- `HOODI_RPC_URL` / `HOODI_PRIVATE_KEY`
+- `HOLESKY_RPC_URL` / `HOLESKY_PRIVATE_KEY`
+- `ETHERSCAN_API_KEY`
 
 ## Functional tests
 
-Assertion libraries supported are [chai](https://www.chaijs.com/) assertion library and [truffle-assertions](https://github.com/rkalis/truffle-assertions). Tests are written with [Mocha](https://mochajs.org/).
+The supported assertion libraries are the [chai](https://www.chaijs.com/)
+assertion library and [hardhat-chai-matchers](https://hardhat.org/hardhat-chai-matchers/docs/overview)
+(bundled with `@nomicfoundation/hardhat-toolbox`). Tests are written with
+[Mocha](https://mochajs.org/).
 
-You can find test under `tests` folder and run all the tests using `truffle test` command
+You can find the tests under the `test` folder and run them all with `npm test`.
 
 ## Code coverage
 
-You can test code coverage by simply running `npm run coverage`, a local blockchain at port 8545 will be automatically provided and shutdown after all the tests are done.
+Run code coverage with:
 
-## Deploy
+```sh
+npm run coverage
+# or
+npx hardhat coverage
+```
 
-To deploy in production is reccomended to use Remix IDE, expected gas usage is around `492,831`.
+## Formatting
+
+```sh
+npm run format
+```
 
 ## Use older version of solidity
 
