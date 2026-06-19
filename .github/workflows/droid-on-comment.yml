@@ -1,0 +1,10 @@
+# Used to run droid on a PR when a comment is made with the command "/droid review".
+# Can be triggered by commenting directly on a PR. The droid-on-comment.yml workflow contains the logic to check if the comment is a valid command and if the commenter has the appropriate association, and then runs droid exec to perform the review.
+name: Droid on comment trigger
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  droid:
+    uses: stakefish/shared-github-actions/.github/workflows/droid-on-comment.yml@main
+    secrets: inherit
