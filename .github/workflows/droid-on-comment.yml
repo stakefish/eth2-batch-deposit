@@ -4,6 +4,8 @@ name: Droid on comment trigger
 on:
   issue_comment:
     types: [created]
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   droid:
     uses: stakefish/shared-github-actions/.github/workflows/droid-on-comment.yml@main
